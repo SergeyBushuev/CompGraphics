@@ -1,9 +1,20 @@
 <html>
 <body>
+		<script>
+				function onClick(event) {
+						//alert('onClick x=' + event.offsetX + ' y=' + event.offsetY);
+						ctx.fillRect(event.offsetX, event.offsetY, 1, 1)
+				}
+				function move(event) {
+						//alert('onClick x=' + event.offsetX + ' y=' + event.offsetY);
+						if (event.buttons != null) ctx.fillRect(event.offsetX, event.offsetY, 1, 1)
+				}
+		</script>
 		<canvas id='lab01' height='300' width='300'>
 				<script>
 						var canvas = document.getElementById('lab01')
 						var ctx = canvas.getContext('2d')
+						canvas.addEventListener('click', onClick);
 						ctx.fillStyle = '#00aa00'
 						ctx.fillRect(10, 10, 100, 100)
 						var arr = new Array(100);
@@ -15,6 +26,9 @@
 						for (i=0; i<100; i++) {
 								if (arr[i] == 1) ctx.fillRect(i, i, 1, 1)
 						}
+						canvas.addEventListener('mousedown', onClick);
+						canvas.addEventListener('mousemove', move);
+						canvas.addEventListener('mouseup', onClick);
 				</script>
 		</canvas>
 </body>
