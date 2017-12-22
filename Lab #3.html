@@ -1,0 +1,52 @@
+<html>
+<body>
+<table>
+<tr><td><canvas id='lab03_1' height='100' width='100' style='border:1px solid;'></td>
+<td><canvas id='lab03_2' height='100' width='100' style='border:1px solid;'></td>
+</tr>
+<td><button onclick="Sobel()">Sobel</button></td>
+</table>
+<script>
+   let canvas = document.getElementById('lab03_1');
+   let ctx = canvas.getContext('2d');
+   let canvas1 = document.getElementById('lab03_2');
+   let ctx1 = canvas1.getContext('2d');
+   let img = new Image();
+   img.src ='1.jpg';
+   img.onload = function () 
+   {
+     ctx.drawImage(img, 0, 0);
+   } 
+   
+   
+   function Sobel()
+   {
+      let ch = canvas.height;
+      let cw = canvas.width;
+      let imgdata = ctx.getImageData(0, 0, cw, ch);
+      let imgarray = imgdata.data;  
+      let img2data = ctx1.getImageData(0, 0, cw, ch);
+      for (let i=1; i<ch-1 ; i++) {
+        for (let j=1; j<cw-1 ; j++) {
+          let a1 = imgarray[((i-1)*cw + j - 1)*4];
+          let a2 = imgarray[((i-1)*cw + j)*4];
+          let a3 = imgarray[((i-1)*cw + j + 1)*4];
+          let a4 = imgarray[(i*cw + j - 1)*4];
+          let a5 = imgarray[(i*cw + j)*4];
+          let a6 = imgarray[(i*cw + j +1)*4];
+          let a7 = imgarray[((i+1)*cw + j - 1)*4];
+          let a8 = imgarray[((i+1)*cw + j)*4];
+          let a9 = imgarray[((i+1)*cw + j + 1)*4];
+          let Gx = (a7 + 2*a8 + a9) - (a1 + 2*a2 + a3);
+          let Gy = (a3 + 2*a6 + a9) - (a1 + 2*a4 + a7);
+          let G = Math.sqrt(Gx*Gx + Gy*Gy);                  
+          if (G>0) {
+                   img2data.data[(i*cw+j)*4+3] = G;
+          }
+        }
+        ctx1.putImageData(img2data,0, 0);
+      }
+   }
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<body>
+<table>
+<tr>
+<tr><canvas id='lab02' height='100' width='100' style='border:1px solid;'></tr>
+<tr><canvas id='lab03' height='100' width='100' style='border:1px solid;'></tr>
+</tr>
+<td><button onclick="Sobel()">Sobel</button></td>
+</table>
+
+<script>
+	let canvas = document.getElementById('lab02');
+	let ctx = canvas.getContext('2d');
+	let canvas1 = document.getElementById('lab03');
+	let ctx1 = canvas1.getContext('2d');
+
+	let img = new Image();
+	img.crossOrigin = '';
+	img.src="1.jpg";
+	img.onload = function() {
+		ctx.drawImage(img,0,0);
+	}
+	function Sobel() {
+		let pix = ctx.getImageData(0,0,canvas.width, canvas.height);
+		let pix1 = ctx1.getImageData(0,0,canvas.width, canvas.height);
+		let arr = pix.data;
+		for (y=1;y<canvas.height-1;y++) {
+			for (x=1;x<canvas.width-1;x++) {
+				for (let i = 0; i < 4; i++) {
+				let z1=arr[(x-1+(y-1)*canvas.width)*4+i];
+				let z2=arr[(x+(y-1)*canvas.width)*4+i];
+				let z3=arr[(x+1+(y-1)*canvas.width)*4+i];
+				let z4=arr[(x-1+y*canvas.width)*4+i];
+				let z5=arr[(x+y*canvas.width)*4+i];
+				let z6=arr[(x+1+y*canvas.width)*4+i];
+				let z7=arr[(x-1+(y+1)*canvas.width)*4+i];
+				let z8=arr[(x+(y+1)*canvas.width)*4+i];
+				let z9=arr[(x+1+(y+1)*canvas.width)*4+i];
+				let R=(z1+z2+z3+z4+z5+z6+z7+z8+z9)/9
+				pix1.data[(x+y*canvas.width)*4+i]=R;
+				}
+				
+			}
+		}
+		ctx1.putImageData(pix1, 0, 0);
+	}	
+</script>
+</body>
+</html>
