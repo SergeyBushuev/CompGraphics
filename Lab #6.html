@@ -1,0 +1,60 @@
+<HTML>
+<body>
+
+
+    <canvas id='lab6' height='700' width='700' style="border:1px solid"> </canvas>
+
+
+
+    <script>
+
+            function DrawCircle(event) {
+                let cx = event.offsetX;
+                let cy = event.offsetY;
+                let R = 10;
+                let x = 0;
+                let y = R;
+                let delta = 1 - 2 * R;
+                let er = 0;
+
+                while (y >= 0) {
+                    ctx.fillRect(cx + x, cy + y, 1, 1);
+                    ctx.fillRect(cx + x, cy - y, 1, 1);
+                    ctx.fillRect(cx - x, cy + y, 1, 1);
+                    ctx.fillRect(cx - x, cy - y, 1, 1);
+                    
+                    er = 2 * (delta + y) - 1;
+
+                    if (delta < 0 && er <= 0) {
+                        ++x;
+                        delta += 2 * x + 1;
+                        continue;
+                    }
+
+                    er = 2 * (delta - x) - 1;
+
+                    if (delta > 0 && er > 0) {
+                        --y;
+                        delta += 1 - 2 * y;
+                        continue;
+                    }
+                    ++x;
+                    delta += 2 * (x - y);
+                    --y;
+                }
+
+            }
+
+    </script>
+    <script>
+            var canvas = document.getElementById('lab6');
+            var ctx = canvas.getContext('2d');
+
+            canvas.addEventListener('click', DrawCircle);
+            
+
+
+
+    </script>
+</body>
+</HTML>

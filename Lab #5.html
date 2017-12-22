@@ -1,0 +1,98 @@
+7tml>
+<body>
+<table>
+	<tr>
+	<td>
+		<canvas id='Lab5' height="700" width="700" style="background-color:#aaa; border: 1px solid #ccc; margin:10px;" > 
+	</td>
+	</tr>
+</table>
+<script>
+	let canvas = document.getElementById('Lab5');
+	let ctx = canvas.getContext('2d');
+	let ch = canvas.height;
+	let cw = canvas.width;
+	canvas.addEventListener('click', Draw_line);
+	let p = [0,0];
+	let p0 = [0, 0];
+	let n = 10;
+	let stage = 0;
+
+	function line(ctx, x1, y1, x2, y2) 
+	{
+		let deltax = Math.abs(x2-x1);
+		let deltay = Math.abs(y2-y1);
+		let a;
+		let b;
+		if (deltax>=deltay) 
+		{
+			a = deltax;
+			b = deltay;
+		} 
+		else 
+		{
+			a = deltay;
+			b = deltax;
+		}
+		let e = 2*b-a;
+		console.log(e);
+		let y = 0;
+		for (let x = 0; x < a; x++) 
+		{
+			if (e>0) 
+				{
+					e-=2*a; y++;
+				}
+			if (deltax>=deltay) 
+			{
+				if (((x2-x1)>=0 && (y2-y1)>=0) || ((x2-x1)<0 && (y2-y1)<0))
+					{ 
+						ctx.fillRect(Math.min(x1, x2)+x, Math.min(y1, y2)+y, 1, 1); 
+					}
+				else 
+				{
+					ctx.fillRect(Math.min(x1, x2)+x, Math.max(y1, y2)-y, 1, 1);
+				}
+			} 
+			else 
+			{
+				if (((x2-x1)>=0 && (y2-y1)>=0) || ((x2-x1)<0 && (y2-y1)<0)) 
+					{ 
+						ctx.fillRect(Math.min(x1, x2)+y, Math.min(y1, y2)+x, 1, 1);
+					}
+				else 
+				{
+					ctx,fillRect(Math.max(x1, x2)-y, Math.min(y1, y2)+x, 1, 1);
+				}
+			}
+			e += 2*b;
+		}
+	}
+
+	function Draw_line(e)
+	{
+		if (stage<n-1) 
+		{
+			if (stage!= 0) 
+			{
+				line (ctx, p[0], p[1], e.offsetX, e.offsetY);
+			} 
+			else 
+			{
+				p0[0] = e.offsetX; p0[1] = e.offsetY;
+			}
+			p[0] = e.offsetX; p[1] = e.offsetY;
+			stage++;
+		} 
+		else if (stage==n-1) 
+		{
+			line(ctx, p[0], p[1], e.offsetX, e.offsetY);
+			line(ctx, e.offsetX, e.offsetY, p0[0], p0[1]);
+			stage++;
+		}
+	} 
+
+
+</script>
+</body>
+</html>

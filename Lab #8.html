@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<canvas id = "canvas" width= "700" height="700"></canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    function Vector(x1, y1) {
+        this.x = x1;
+        this.y = y1;
+    }
+
+    function Line(x1, y1, x2, y2){
+        this.start_x = x1;
+        this.start_y = y1;
+        this.end_x = x2;
+        this.end_y = y2;
+        this.draw = function(){
+            context.beginPath();
+            context.moveTo(this.start_x, this.start_y);
+            context.lineTo(this.end_x, this.end_y);
+            context.closePath();
+            context.stroke();
+        };
+        this.direct = function(){
+            return new Vector(this.end_x-this.start_x, this.end_y-this.start_y);
+        };
+        this.normal = function() {
+            var direct = this.direct();
+            return new Vector(-direct.y, direct.x);
+        };
+        this.dot = function(p){
+            return new Vector(this.start_x+p*(this.end_x-this.start_x),this.start_y+p*(this.end_y-this.start_y) );
+        }
+    }
+
+    function scalar_mult(vector_1, vector_2){
+        return vector_1.x*vector_2.x+vector_1.y*vector_2.y;
+    }
+
+    function Polygon(){
+        this.lines = [];
+        this.draw = function(){
+            for(var i = 0; i < this.lines.length; i++){
+                this.lines[i].draw();
+            }
+        }
+    }
+    function cross(line_1, line_2){
+        var a1 = line_1.end_x - line_1.start_x;
+        var a2 = - line_2.end_x + line_2.start_x;
+        var a3 = line_2.start_x - line_1.start_x;
+        var b1 = line_1.end_y - line_1.start_y;
+        var b2 = - line_2.end_y + line_2.start_y;
+        var b3 = line_2.start_y - line_1.start_y;
+        var t2 = (a3*b1 - b3*a1)/(a2*b1 - b2*a1);
+        var t1 = (a3 - t2*a2)/a1;
+        return t1;
+    }
+
+    var polygon = new Polygon();
+    polygon.lines.push(new Line(50, 50, 30, 150), new Line (30, 150, 220, 240),  new Line (220, 240, 350, 200),  new Line(350, 200, 300, 40), new Line(300, 40, 50, 50));
+    polygon.draw();
+
+
+    function draw_in_polygon(line){
+        var t_a = 0, t_b = 1;
+        for(var i = 0; i < polygon.lines.length; i++) {
+            var t = cross(line, polygon.lines[i]);
+            var normal =  polygon.lines[i].normal();
+            var mult = scalar_mult(line.direct(), normal);
+            if(mult < 0) {
+                if(t > t_a) t_a = t
+            }
+            if (mult > 0) {
+                if (t < t_b) t_b = t;
+            }
+        }
+        if (t_b >= t_a) {
+            var dot_1 = line.dot(t_a), dot_2 = line.dot(t_b);
+            var result = new Line(dot_1.x, dot_1.y, dot_2.x, dot_2.y);
+            result.draw();
+        }
+    }
+    var line = new Line();
+    canvas.onclick = function (e) {
+        var x = e.offsetX;
+        var y = e.offsetY;
+        if(line.start_x === undefined) {
+            line.start_x = x;
+            line.start_y = y;
+        }
+        else{
+            line.end_x = x;
+            line.end_y = y;
+            draw_in_polygon(line);
+            line.start_x = undefined;
+            line.start_y = undefined;
+            line.end_y = undefined;
+            line.end_x = undefined;
+        }
+    };
+
+</script>
+</body>
+</html>

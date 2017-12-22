@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+</head>
+<body>
+
+    <canvas id = "canvas" width= "700" height="700"></canvas>
+    <script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    for(var i = 0; i < 11; i++)
+        for(var j = 0; j < 11; j++){
+        var circle = new Circle(i*40, j*40, 40);
+        circle.draw();
+        }
+    function Circle(x,y, r){
+        this.center_x = x;
+        this.center_y = y;
+        this.radius = r;
+        this.draw = function(){
+            var x = 0, y = this.radius, delta = 1 - 2 * y, error = 0;
+            while (y >= 0) {
+                context.fillRect(this.center_x + x, this.center_y + y, 1, 1);
+                context.fillRect(this.center_x + x, this.center_y - y, 1, 1);
+                context.fillRect(this.center_x - x, this.center_y + y, 1, 1);
+                context.fillRect(this.center_x - x, this.center_y - y, 1, 1);
+                error = 2 * (delta + y) - 1;
+                if ((delta < 0) && (error <= 0)) {
+                    delta += 2 * ++x + 1;
+                    continue
+                }
+                error = 2 * (delta - x) - 1;
+                if ((delta > 0) && (error > 0)) {
+                    delta += 1 - 2 * --y;
+                    continue;
+                }
+                x++;
+                delta += 2 * (x - y);
+                y--;
+            }
+        }
+    }
+    function fill(x, y, new_color){
+        context.fillStyle = new_color;
+        if(x >= 0 && x < canvas.width && y >= 0 && y < canvas.height){
+            context.fillRect(x, y, 1, 1);
+            var neighbor_color = context.getImageData(x, y - 1, 1, 1).data;
+            if(!neighbor_color[3]) fill(x, y - 1, new_color);
+            neighbor_color = context.getImageData(x + 1, y, 1, 1).data;
+            if(!neighbor_color[3])    fill(x + 1, y, new_color);
+            neighbor_color = context.getImageData(x, y + 1, 1,1).data;
+            if(!neighbor_color[3])    fill(x, y + 1, new_color);
+            neighbor_color = context.getImageData(x - 1, 1, 1, 1).data;
+            if(!neighbor_color[3])    fill(x - 1, y, new_color);
+        }
+    }
+
+    canvas.onclick = function(e){
+      var x = e.offsetX;
+      var y = e.offsetY;
+      var image = context.getImageData(0, 0, canvas.width, canvas.height);
+      var data = image.data;
+      fill(x,y, "green");
+};
+    </script>
+</body>
+</html>

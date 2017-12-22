@@ -1,0 +1,59 @@
+<html>
+<body>
+<table>
+	<tr>
+		<td>
+			<canvas id='Lab7' height="700" width="700" style="background-color:#eee; border: 1px solid #eee;" > 
+		</td>
+	</tr>
+</table>
+<script>
+
+	let canvas = document.getElementById('Lab7');
+	let ctx = canvas.getContext('2d');
+	let ch = canvas.height;
+	let cw = canvas.width;
+	canvas.addEventListener('click', Draw);
+
+	let step=0;
+	let x1,y1,x2,y2,
+		isRectDrawn,
+		rectCoordinates
+
+	function drawLine({x1, y1, x2, y2}) {
+		ctx.moveTo(x1, y1);
+		ctx.lineTo(x2, y2);
+		ctx.stroke();
+		ctx.fillStyle = "#EEEEEE"
+		ctx.fillRect(0, 0, rectCoordinates.x1 - 1, 500)
+		ctx.fillRect(0, 0, 500, rectCoordinates.y1 - 1)
+		ctx.fillRect(0, rectCoordinates.y2 + 1, 500, 500)
+		ctx.fillRect(rectCoordinates.x2 + 1, 0, 500, 500)
+	}
+
+	function drawRect({x1, y1, x2, y2}) {
+		rectCoordinates = {x1, y1, x2, y2}
+		ctx.rect(x1, y1, x2 - x1, y2 - y1);
+		ctx.stroke();
+		isRectDrawn = true;
+	}
+
+	function Draw(e) {
+		if (step === 0) {
+			x1=e.offsetX;
+			y1=e.offsetY;
+			step++;
+			return
+		}
+		x2=e.offsetX;
+		y2=e.offsetY;
+		if (isRectDrawn) drawLine({x1, x2, y1, y2})
+		else drawRect({x1, y1, x2, y2})
+		step = 0
+		console.log("x1=", x1, "y1=", y1, "x2=", x2, "y2=", y2, "rectCoordinates=", rectCoordinates);
+	}
+
+</script>
+</body>
+</html>
+
